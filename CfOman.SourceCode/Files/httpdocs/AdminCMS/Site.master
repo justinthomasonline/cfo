@@ -1,0 +1,535 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="Site.master.cs" Inherits="Site" %>
+
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="MemoDataManagement" %>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>CFO CMS </title>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'
+        name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+    <!-- Bootstrap core CSS     -->
+    <%-- <link href="../css/fonts.css" rel="stylesheet" type="text/css" />--%>
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- Animation library for notifications   -->
+    <link href="assets/css/animate.min.css" rel="stylesheet" />
+    <!--  Light Bootstrap Table core CSS    -->
+    <link href="assets/css/light-bootstrap-dashboard.css" rel="stylesheet" />
+    <!--  CSS for Demo Purpose, don't include it in your project     -->
+    <link href="assets/css/demo.css" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/css/chosen.css" />
+    <link href="assets/css/pe-icon-7-stroke.css" rel="stylesheet" />
+
+    <!--     Fonts and icons     -->
+    <link href="../css/jquery.datetimepicker.css" rel="stylesheet" />
+
+
+    <!-- Favicon -->
+
+    <script src="assets/js/jquery-1.10.2.js" type="text/javascript"></script>
+
+    <style>
+        .dimensions {
+            font-size: 11px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        #ModulePage {
+            display: none;
+        }
+
+        #external {
+            display: none;
+            margin-top: 10px;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 4px;
+            margin-left: 4px;
+        }
+
+            input[type="checkbox"] + label {
+                margin-right: 10px;
+            }
+
+        .btn-primary {
+            color: #fff;
+            background-color: #00add3;
+            border-color: #00add3;
+            display: inline-block;
+            padding: 6px 12px;
+            margin-bottom: 0;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1.42857143;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            -ms-touch-action: manipulation;
+            touch-action: manipulation;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            background-image: none;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        .grid-link {
+            color: #333;
+            text-decoration: underline;
+        }
+
+        .panel-title::after {
+            content: "";
+            font-family: fontawesome;
+            float: right;
+        }
+
+        .header1 {
+            width: 90%;
+            background-color: #f9f9f9;
+            height: 40px;
+            padding: 4px;
+        }
+
+        .cmsheader {
+            float: left;
+            height: 60px;
+            line-height: 60px;
+            font-size: 26px;
+            color: #0B205B;
+            margin-left: 0 auto;
+            text-align: center;
+            width: 52%;
+            text-transform: uppercase;
+        }
+
+        #Message {
+            position: absolute;
+            z-index: 9999;
+            width: 480px;
+            height: 0px;
+            background-color: #1DC7EA;
+            margin-left: calc(50% - 240px);
+            margin-top: 0px;
+            box-shadow: 0px 0px 10px #abadb3;
+            color: #FFFFFF;
+            line-height: 50px;
+            font-size: 18px;
+            padding-left: 20px;
+            opacity: 0;
+        }
+
+            #Message div {
+                opacity: 0;
+                margin-left: 100px;
+            }
+
+        .rightmenu {
+            float: left;
+            width: 19%;
+            margin-right: 0px;
+            border-radius: 5px;
+            margin-top: 24px;
+            padding: 4px;
+        }
+
+        .headerrs {
+            font-weight: bold;
+            width: 100%;
+        }
+
+        #ModulePage {
+            display: none;
+        }
+
+        .date {
+            float: right;
+            text-align: right;
+            color: rgb(142, 144, 144);
+            font-size: 13px;
+            padding-top: 6px;
+        }
+
+        .date1 {
+            float: left;
+            padding-left: 10px;
+            text-align: right;
+            color: rgb(142, 144, 144);
+            font-size: 13px;
+            padding-top: 6px;
+        }
+
+        ul.breadcram {
+            float: left;
+            margin-top: 9px;
+        }
+
+            ul.breadcram li {
+                float: left;
+                font-size: 13px;
+                background: url(assets/img/breadcramarrow.png) no-repeat right center;
+                padding: 11px 12px;
+                color: rgb(142, 144, 144);
+                list-style: none outside none;
+                padding-right: 18px;
+            }
+
+                ul.breadcram li.last {
+                    background: none;
+                }
+
+        .CuteEditorFrame {
+            height: 300px !important;
+        }
+
+        .card1 {
+            box-shadow: 0 1px 2px rgba(0, 0, 0, .1), 0 0 0 1px rgba(63, 63, 68, 0.3);
+            width: 96%;
+            margin-left: 2%;
+            font-family: "Roboto","Helvetica Neue",Arial,sans-serif !important;
+            background-color: rgba(243,243,243,0.4);
+        }
+
+        .header3 {
+            padding: 5px 14px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.09);
+            float: left;
+            width: 100%;
+        }
+
+        .title4 {
+            color: #42d0ed;
+            font-size: 18px;
+            float: left;
+        }
+
+        .menupath {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.09);
+            float: left;
+            width: 98%;
+            margin-left: 1%;
+        }
+
+        .tender_1 {
+            text-align: center;
+        }
+
+        .filterbox {
+            box-shadow: 0 1px 2px rgba(0, 0, 0, .1), 0 0 0 1px rgba(63, 63, 68, 0.3);
+            padding: 10px;
+            width: 98%;
+            margin-left: 1%;
+            margin-top: 12px;
+            border-radius: 5px;
+            margin-bottom: 12px;
+        }
+
+        .titleborder {
+            font-weight: bold;
+            margin-bottom: 20px !important;
+            border-bottom: 3px solid #01aecc;
+            padding-bottom: 8px;
+        }
+
+        .sidebar .logo, body > .navbar-collapse .logo {
+            padding: 10px 15px;
+            border-bottom: 2px solid #FFC400;
+            background-color: #fff;
+            background-color: #fff;
+            background-image: url(../images/logo.png);
+            background-repeat: no-repeat;
+            background-position: 10px;
+            background-size: 57px;
+        }
+
+        .navbar-default {
+            border-bottom: 2px solid #FFC400;
+        }
+
+        .navbar .navbar-nav > li > a {
+            color: #0B205B !important;
+        }
+
+        .sidebar .nav li.active > a {
+            color: #fff;
+        }
+
+        .sidebar .nav li:hover > a {
+            color: #fff;
+        }
+    </style>
+
+    <script>
+        function Message(Color) {
+            if (Color == "Red")
+                $("#Message").css("background-color", "#d74546");
+            setTimeout(function () {
+                $("#Message").animate({ "opacity": ".8", "height": "50px" }, 500, "", function () {
+                    setTimeout(function () {
+                        $("#Message").fadeOut(300);
+                    }, 2000);
+                });
+            }, 1000);
+            setTimeout(function () {
+                $("#Message div").animate({ "opacity": "1", "margin-left": "0px" }, 1000);
+            }, 1200);
+        }
+        function Delete(href) {
+            if (confirm("Are you sure? confirm Delete"))
+                window.location = href;
+        }
+
+        function DeleteConfirm() {
+            var x = confirm("Are you sure? confirm Delete");
+            if (x)
+                return true;
+            else
+                return false;
+        }
+        $("document").ready(function () {
+
+            $(".MenuTypeDropDownList").change(function () {
+                if ($(this).val() == "Module" || $(this).val() == "External" || $(this).val() == "Internal") {
+
+                    if ($(this).val() == "Module") {
+                        $("#ModulePage").fadeIn(300);
+                        $("#external").fadeOut(300);
+                    }
+                    else if ($(this).val() == "Internal") {
+                        $("#ModulePage").fadeIn(300);
+                        $("#ModulePage label").html("Internal Page Link");
+                        $("#external").fadeOut(300);
+                    }
+                    else {
+                        $("#ModulePage").fadeIn(300);
+                        $("#ModulePage label").html("Link");
+                        $(".ModuleTypeDropDownList").fadeOut(300);
+                        $("#lblLabel").fadeIn(300);
+                        $("#external").fadeIn(300);
+                    }
+                }
+                else {
+                    $("#ModulePage").fadeOut(300);
+                    $("#external").fadeOut(300);
+                }
+            });
+        });
+    </script>
+
+</head>
+<body>
+    <form id="form1" runat="server" enctype="multipart/form-data">
+        <div class="wrapper">
+            <div id="Message">
+                <div>
+                    <%
+                        if (Request.QueryString["Message"] != null)
+                            Response.Write(Request.QueryString["Message"]);
+
+
+                    %>
+                </div>
+            </div>
+            <div class="sidebar" style="background-color: #0B205B;" data-image="#">
+                <!--   you can change the color of the sidebar using: data-color="blue | azure | green | orange | red | purple" -->
+                <div class="sidebar-wrapper">
+                    <div class="logo" style="height: 62px; line-height: 62px; cursor: pointer; text-align: center; margin: 0px 0px; cursor: pointer;" onclick="window.location='Default.aspx'">
+                    </div>
+                    <ul class="nav">
+                        <li id="homeli"><a href="Default.aspx"><i class="pe-7s-graph"></i>
+                            <p>
+                                Dashboard
+                            </p>
+                        </a></li>
+                        <% string sqlP = "SElect * from CMSUsers where id='" + Session["UserSession"].ToString() + "'";
+                            DataSet dsP = MemoDataAccess.GetData(sqlP, "CMSUsers");
+                            DataRow rowP = dsP.Tables["CMSUsers"].Rows[0];
+
+                            string[] Permissions = rowP["Permissions"].ToString().Split(',');
+                            if (Permissions.Contains("Menus.aspx"))
+                            {
+                        %>
+                        <li id="menuli"><a href="Menus.aspx"><i class="pe-7s-menu"></i>
+                            <p>
+                                Menu
+                            </p>
+                        </a></li>
+                        <%}%>
+
+                        <%
+                            if (Permissions.Contains("HomePage.aspx"))
+                            {
+                        %>
+                        <li id="homethumbli"><a href="HomePage.aspx"><i class="pe-7s-home"></i>
+                            <p>
+                                Home Page
+                            </p>
+                        </a></li>
+                        <%
+                            }
+                            if (Permissions.Contains("Events.aspx"))
+                            {
+                        %>
+                        <li id="eventsli"><a href="Events.aspx"><i class="pe-7s-plus"></i>
+                            <p>
+                                Culture Events
+                            </p>
+                        </a></li>
+                        <%
+                            }
+
+                            if (Permissions.Contains("ContactUs.aspx"))
+                            {
+                        %>
+                        <li id="contactli"><a href="ContactUs.aspx"><i class="pe-7s-user"></i>
+                            <p>
+                                Contact Us
+                            </p>
+                        </a></li>
+                        <%
+                            }
+                            if (Permissions.Contains("Newsletter.aspx"))
+                            {
+                        %>
+                        <li id="newsletterli"><a href="Newsletter.aspx"><i class="pe-7s-news-paper"></i>
+                            <p>
+                                News Letter
+                            </p>
+                        </a></li>
+                        <%
+                            }
+                            if (Permissions.Contains("PastEvents.aspx"))
+                            {
+                                %>
+                        <li id="pasteventsli"><a href="PastEvents.aspx"><i class="pe-7s-right-arrow"></i>
+                            <p>
+                                Past Events
+                            </p>
+                        </a></li>
+                                <%
+                            }
+                        %>
+
+                        <%                    
+                            if (Permissions.Contains("Logs.aspx"))
+                            {  %>
+
+                        <li id="userlogsli"><a href="Logs.aspx"><i class="pe-7s-right-arrow"></i>
+                            <p>
+                                User Logs
+                            </p>
+                        </a></li>
+
+                        <% }
+
+                            if (Permissions.Contains("Users.aspx"))
+                            {  %>
+                        <li id="usersli"><a href="Users.aspx"><i class="pe-7s-add-user"></i>
+                            <p>
+                                Users
+                            </p>
+                        </a></li>
+                        <%}
+                        %>
+                    </ul>
+                </div>
+            </div>
+            <div class="main-panel">
+                <nav class="navbar navbar-default navbar-fixed">
+                    <div class="container-fluid">
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation-example-2">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+
+                        </div>
+                        <div class="collapse navbar-collapse">
+                            <%-- <ul class="nav navbar-nav navbar-left">
+                                <li>
+                                    <a href="Default.aspx" class="dropdown-toggle" data-toggle="dropdown">
+                                        <i class="fa fa-dashboard"></i>
+                                    </a>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                        <i class="fa fa-globe"></i>
+                                        <b class="caret"></b>
+                                       
+                                    </a>
+                         
+                                </li>
+
+                            </ul>--%>
+                            <div class="cmsheader">Content Management System</div>
+                            <ul class="nav navbar-nav navbar-right">
+                                <li><a href="#" style="color: #999;">Welcome,&nbsp;<%=Session["UsernameSession"].ToString() %></a></li>
+                                <li>
+                                    <a href="Logout.aspx" style="color: hsl(189, 100%, 40%); font-size: 14px;">Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+                <div class="content">
+                    <div class="container-fluid">
+                        <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                        </asp:ContentPlaceHolder>
+                    </div>
+                    <footer class="footer">
+                        <div class="container-fluid">
+                            <nav class="pull-left">
+                            </nav>
+                            <p class="copyright pull-right">
+                                &copy; 2019 <a href="http://www.gulfcybertech.com">GulfCyberTech</a>
+
+                            </p>
+                        </div>
+                    </footer>
+                </div>
+            </div>
+
+        </div>
+    </form>
+</body>
+<%--<script src="assets/jqui1/jquery-ui.min.js"></script>--%>
+<script src="../js/jquery.js"></script>
+<script src="assets/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="assets/js/jquery.chosen.min.js" type="text/javascript"></script>
+<script src="assets/js/light-bootstrap-dashboard.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<link href="assets/jqui1/jquery-ui.min.css" rel="stylesheet" />
+<script>
+    $(function () {
+
+        $.datetimepicker.setLocale('en');
+
+        $('.datetimepicker').datetimepicker({
+            timepicker: true,
+            format: 'd/m/Y H:i',
+            lang: 'en',
+            step:5
+        });
+
+        $('.datepickettextbox').datetimepicker({
+            timepicker: false,
+            format: 'd/m/Y',
+            lang: 'en'
+        });
+    });
+
+</script>
+</html>

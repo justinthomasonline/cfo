@@ -1,0 +1,431 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="MasterPage.master.cs" Inherits="MasterPage" %>
+
+<%@ Import Namespace="System.Data" %>
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<!-- Added by HTTrack -->
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<!-- /Added by HTTrack -->
+<head runat="server">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-146166680-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-146166680-1');
+</script>
+
+
+    <link rel="icon" href="images/logo.png" />
+    <meta charset="utf-8" />
+    <link href="css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="css/slick.css" rel="stylesheet" type="text/css" />
+    <link href="css/slick-theme.css" rel="stylesheet" type="text/css" />
+    <link href="css/animate.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="css/styles.css" rel="stylesheet" type="text/css" />
+    <link href="css/responsive.css" rel="stylesheet" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <title>:: CFO ::</title>
+</head>
+<body class="inner-pages">
+    <header id="myHeader">
+        <div class="search-bar">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-7">
+                        <div class="social-media">
+                            <ul>
+                                <% 
+                                    DataSet dsContactH = DataAccess.GetData("SELECT * FROM ContactUs Where Id = 1", "Contact", new string[] { }, new string[] { });
+
+                                    if (dsContactH.Tables["Contact"].Rows.Count > 0)
+                                    {
+                                        DataRow dataH = dsContactH.Tables["Contact"].Rows[0];
+
+                                %>
+                                <li><a href="<%=(!string.IsNullOrEmpty(dataH["FacebookLink"].ToString())) ? dataH["FacebookLink"].ToString() : "#" %>" target="_blank"><i class="fa fa-facebook"></i></a></li>
+                                <li><a href="<%=(!string.IsNullOrEmpty(dataH["InstaLink"].ToString())) ? dataH["InstaLink"].ToString() : "#" %>" target="_blank"><i class="fa fa-instagram"></i></a></li>
+                                <li><a href="<%=(!string.IsNullOrEmpty(dataH["YoutubeLink"].ToString())) ? dataH["YoutubeLink"].ToString() : "#" %>" target="_blank"><i class="fa fa-youtube"></i></a></li>
+                                <li><a href="#" target="_blank"><i class="fa fa-whatsapp"></i><%=dataH["WhatsappNo"] %></a></li>
+                                <%
+                                    }
+
+                                %>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-sm-5 hidden-xs ">
+                        <div class="search form-inline">
+                            <input type="text" placeholder="Search..." id="search" name="search" />
+                            <div class="search-icon"><a href="JavaScript:Void(0);" onclick="showResult();" class=""><i class="fa fa-search" aria-hidden="true"></i></a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-nav">
+            <div class="container">
+                <div class="row">
+                    <div class="logo-bar">
+                        <a href="home">
+                            <img src="images/logo.png" />
+                        </a>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="nav-bar">
+                            <div class="row visible-xs mobile-header">
+                                <div class="col-xs-9">
+                                    <div class="search form-inline">
+                                        <input type="text" placeholder="Search...">
+                                        <div class="search-icon"><a href="" class=""><i class="fa fa-search" aria-hidden="true"></i></a></div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+                                </div>
+                            </div>
+                            <div class="collapse navbar-collapse main-menu" id="myNavbar">
+                                <ul class="">
+                                    <% 
+                                        string Alian = string.Empty;
+                                        string activeAlias = string.Empty;
+                                        string homeActive = string.Empty;
+
+                                        if (Page.RouteData.Values["Alias"] != null)
+                                        {
+                                            Alian = Page.RouteData.Values["Alias"].ToString();
+
+                                            DataSet dsAlias = DataAccess.GetData("SELECT ISNULL((SELECT TOP 1 m.Alias FROM Menus m Where m.id = Menus.Parent_ID Order by m.id),Menus.Alias) as NewAlias FROM Menus Where Alias = '" + Alian + "'", "Alias", new string[] { }, new string[] { });
+
+                                            if (dsAlias.Tables["Alias"].Rows.Count > 0)
+                                            {
+                                                DataRow rowAlias = dsAlias.Tables["Alias"].Rows[0];
+                                                activeAlias = rowAlias["NewAlias"].ToString();
+                                            }
+                                        }
+                                        else
+                                        {
+                                            homeActive = "active";
+                                        }
+
+                                    %>
+                                    <li class="<%=homeActive %>"><a href="home">HOME</a></li>
+                                    <%
+
+                                        DataSet dsMenu = DataAccess.GetData("SELECT m.id,m.Parent_ID,m.Title,m.Alias,(SELECT COUNT(1) FROM Menus Where Parent_ID = m.id) as InnerPageCount FROM Menus m Where m.Parent_ID = 0 and m.Active = 'True' Order By m.Sort", "Menus", new string[] { }, new string[] { });
+                                        int menuid = 1;
+                                        string querystring = string.Empty;
+                                        foreach (DataRow item in dsMenu.Tables["Menus"].Rows)
+                                        {
+                                            if (Convert.ToInt32(item["InnerPageCount"]) > 0)
+                                            {
+
+                                    %>
+                                    <li class="<%=(item["Alias"].ToString() == activeAlias) ? "active" : string.Empty %> dropdown">
+                                        <a href="javascript:void(0)" class="dropdown-toggle mainMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%=item["Title"] %> <span class="caret"></span></a>
+                                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                            <ul>
+                                                <% 
+                                                    DataSet dsInnerMenu = DataAccess.GetData("SELECT * FROM Menus Where Parent_ID = '" + item["id"] + "' AND Active = 'True' Order By Sort", "InnerMenu", new string[] { }, new string[] { });
+
+                                                    foreach (DataRow innerMenu in dsInnerMenu.Tables["InnerMenu"].Rows)
+                                                    {
+                                                        querystring = string.Empty;
+                                                        querystring = (innerMenu["Alias"].ToString() == "upcomming-events" ? innerMenu["Alias"].ToString() + "?id=" + 1 : innerMenu["Alias"].ToString() == "past-events" ? innerMenu["Alias"].ToString() + "?id=" + 2 : innerMenu["Alias"].ToString());
+
+                                                %>
+                                                <li><a href="<%=querystring %>"><%=innerMenu["Title"] %></a></li>
+                                                <%
+                                                    }
+                                                %>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <%
+                                        }
+                                        else
+                                        {
+                                    %>
+                                    <li class="<%=(item["Alias"].ToString() == activeAlias) ? "active" : string.Empty %>"><a class="mainMenu" href="<%=item["Alias"] %>"><%=item["Title"] %></a></li>
+                                    <%
+                                            }
+                                            menuid++;
+                                        }
+
+                                    %>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <form runat="server">
+        <div class="clearfix"></div>
+        <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+        </asp:ContentPlaceHolder>
+        <footer>
+            <asp:HiddenField ID="hfWhatonCount" runat="server" Value="0" />
+            <div class="footer-top" id="NewsLetterSection" runat="server" visible="false">
+                <div class="container hide">
+                    <div class="row">
+                        <div class="subscriping">
+                            <div class="col-sm-6 hide">
+                                <p >Enter Your email and we'll send you more information of courses</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="sumiting1">
+                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" ValidationGroup="MasterContact" ErrorMessage="Required Field" ControlToValidate="EmailIDTextBox" Display="Dynamic" ForeColor="Red" Enabled="true" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                    <asp:RegularExpressionValidator ID="RegularExpressionValidator2" ValidationGroup="MasterContact" runat="server" ErrorMessage="Invalid Email Address" ControlToValidate="EmailIDTextBox" Display="Dynamic" ForeColor="Red" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*" SetFocusOnError="true"></asp:RegularExpressionValidator>
+                                    <asp:TextBox ID="EmailIDTextBox" MaxLength="255" placeholder="Enter Your Email Address" runat="server"></asp:TextBox>
+
+                                </div>
+                                <div class="sumiting1">
+                                    <asp:TextBox ID="SecurityCodeLoginTextBox" placeholder="Security Code(required)" runat="server" autocomplete="off" Width="211px"></asp:TextBox>
+                                    <span class="wpcf7-form-control-wrap your-message">
+                                        <asp:Image ID="ImgCaptcha" runat="server" ImageUrl="captcha.ashx" CssClass="securityimg" />
+                                        <asp:RequiredFieldValidator runat="server" ErrorMessage="Required Field" ControlToValidate="SecurityCodeLoginTextBox" ValidationGroup="MasterContact" ForeColor="Red" Display="Dynamic" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                    </span>
+                                    <asp:Button ID="Submit" runat="server" Text="Submit" ValidationGroup="MasterContact" OnClick="Submit_Click" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-botton">
+                <div class="container">
+                    <div class="row">
+                        <div class="footer-menu">
+                            <ul>
+                                <li class="active-footer"><a href="home">HOME</a></li>
+                                <% 
+                                    DataSet dsMenuF = DataAccess.GetData("SELECT m.id,m.Parent_ID,m.Title,m.Alias,(SELECT COUNT(1) FROM Menus Where Parent_ID = m.id) as InnerPageCount,ISNULL((SELECT TOP 1 Alias FROM Menus Where Parent_ID = m.id order by id),m.Alias) as InnerPageAlias FROM Menus m Where m.Parent_ID = 0 and m.Active = 'True' Order By m.Sort", "Menus", new string[] { }, new string[] { });
+                                    string querystring1 = string.Empty;
+
+                                    foreach (DataRow itemF in dsMenuF.Tables["Menus"].Rows)
+                                    {
+                                        querystring1 = string.Empty;
+                                        querystring1 = (itemF["InnerPageAlias"].ToString() == "upcomming-events" ? itemF["InnerPageAlias"].ToString() + "?id=" + 1 : itemF["InnerPageAlias"].ToString() == "past-events" ? itemF["InnerPageAlias"].ToString() + "?id=" + 2 : itemF["InnerPageAlias"].ToString());
+                                %>
+                                <li><a href="<%=querystring1 %>"><%=itemF["Title"] %></a></li>
+                                <%--class="active-footer"--%>
+                                <%
+                                    }
+                                %>
+                            </ul>
+                        </div>
+                        <div class="cobyright-sec">
+                            <p>Copyright &copy; <%=DateTime.Now.Year %> Centre Franco Omanais. All Rights Reseved</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </form>
+
+    
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/wow.min.js"></script>
+    <script type="text/javascript" src="js/slick.js"></script>
+    <script>
+        function showResult() {
+            var vl = document.getElementById('search').value;
+
+            if (vl != '' && vl != undefined && vl != null) {
+                window.location = '/Search.aspx?Keyword=' + vl;
+            }
+        }
+
+        var TRange = null;
+
+        function findString(str) {
+            if (parseInt(navigator.appVersion) < 4) return;
+            var strFound;
+            if (window.find) {
+
+                // CODE FOR BROWSERS THAT SUPPORT window.find
+
+                strFound = self.find(str);
+                if (!strFound) {
+                    strFound = self.find(str, 0, 1);
+                    while (self.find(str, 0, 1)) continue;
+                }
+            }
+            else if (navigator.appName.indexOf("Microsoft") != -1) {
+
+                // EXPLORER-SPECIFIC CODE
+
+                if (TRange != null) {
+                    TRange.collapse(false);
+                    strFound = TRange.findText(str);
+                    if (strFound) TRange.select();
+                }
+                if (TRange == null || strFound == 0) {
+                    TRange = self.document.body.createTextRange();
+                    strFound = TRange.findText(str);
+                    if (strFound) TRange.select();
+                }
+            }
+            else if (navigator.appName == "Opera") {
+                alert("Opera browsers not supported, sorry...")
+                return;
+            }
+            if (!strFound) alert("String '" + str + "' not found!")
+            return;
+        }
+
+    </script>
+    <script>
+        window.onscroll = function () { myFunction() };
+
+        var header = document.getElementById("myHeader");
+        var sticky = header.offsetTop;
+
+        function myFunction() {
+            if (window.pageYOffset > sticky) {
+                header.classList.add("sticky");
+            } else {
+                header.classList.remove("sticky");
+            }
+        }
+    </script>
+    <script>new WOW().init();</script>
+    <script>
+        $('.carousel').carousel({
+            pause: "false"
+        });
+
+        // Slick SLider
+        $(document).on('ready', function () {
+
+            if ($("#hfWhatonCount").val() == "0") {
+                $(".whatsOn").slick({
+                    dots: false,
+                    arrow: true,
+                    infinite: true,
+                    slidesToShow: 2,
+                    slidesToScroll: 1,
+                    responsive: [
+                        {
+                            breakpoint: 1024,
+                            settings: {
+                                slidesToShow: 1,
+                                slidesToScroll: 1,
+                                infinite: true,
+                                dots: true
+                            }
+                        },
+                        {
+                            breakpoint: 600,
+                            settings: {
+                                slidesToShow: 1,
+                                slidesToScroll: 1
+                            }
+                        },
+                        {
+                            breakpoint: 480,
+                            settings: {
+                                slidesToShow: 1,
+                                slidesToScroll: 1
+                            }
+                        }
+                    ]
+                });
+            }
+            else {
+                $(".whatsOn1").slick({
+                    dots: false,
+                    arrow: true,
+                    infinite: true,
+                    slidesToShow: 4,
+                    slidesToScroll: 1,
+                    responsive: [
+                        {
+                            breakpoint: 1024,
+                            settings: {
+                                slidesToShow: 1,
+                                slidesToScroll: 1,
+                                infinite: true,
+                                dots: true
+                            }
+                        },
+                        {
+                            breakpoint: 600,
+                            settings: {
+                                slidesToShow: 1,
+                                slidesToScroll: 1
+                            }
+                        },
+                        {
+                            breakpoint: 480,
+                            settings: {
+                                slidesToShow: 1,
+                                slidesToScroll: 1
+                            }
+                        }
+                    ]
+                });
+            }
+
+
+
+
+            // Partner
+            $(".our-partner").slick({
+                dots: false,
+                arrow: false,
+                autoplay: true,
+                infinite: true,
+                slidesToShow: 4,
+                slidesToScroll: 1,
+
+                responsive: [
+                    {
+                        breakpoint: 1024,
+                        settings: {
+                            slidesToShow: 3,
+                            slidesToScroll: 1,
+                            infinite: true,
+                            dots: true
+                        }
+                    },
+                    {
+                        breakpoint: 600,
+                        settings: {
+                            slidesToShow: 2,
+                            slidesToScroll: 1
+                        }
+                    },
+                    {
+                        breakpoint: 480,
+                        settings: {
+                            slidesToShow: 1,
+                            slidesToScroll: 1
+                        }
+                    }
+                ]
+            });
+
+        });
+
+        // Dropdown Menu
+
+        $('.main-menu li.dropdown').hover(function () {
+            $(this).find('.dropdown-menu').stop(true, true).delay(100).fadeIn(300);
+        }, function () {
+            $(this).find('.dropdown-menu').stop(true, true).delay(100).fadeOut(300);
+        });
+    </script>
+</body>
+</html>
+
+
+
